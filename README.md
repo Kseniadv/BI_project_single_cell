@@ -33,6 +33,9 @@ T cells from normal and cancerous tissues from multiple donors.
 
 ## Workflow
 
+Our project is based on open data from the article “Transcriptional programs of neoantigen-specific TIL in anti-PD-1-treated lung cancers” (Caushi J. X. et al., 2021).
+The data was obtained from GEO (GSE173351) and contains Cell Ranger (v3.1.0) output - digital gene expression matrix and TCR data for each sample.
+
 The workflow of the project presented below:
 
 ![](pictures/pipline.png)
@@ -48,6 +51,66 @@ The code presented in the files:
 - TCR.R
 
 Due to computational limitations, we worked with a subset of patient samples from the article: 4 normal samples and 4 tumor samples.
+
+## Results
+
+**Clustering and annotation**
+
+Patient samples were merged into a subset for following analysis. The quality of cells was then assessed based on:
+1. the number of genes detected per cell, 
+2. the proportion of mitochondrial gene. 
+
+Low-quality cells were filtered if the number of detected genes was below 250 or above 2500, the proportion of mitochondrial gene counts was higher than 10%.
+Also mitochondrial genes, genes associated with poorly supported transcriptional patterns were also removed from the analysis.
+
+|Correlation plot nCount and percent.mt | Correlation plot nCount and nFeature |
+| ------------- | ------------- |
+| ![](pictures/nCount_mt.png) | ![](pictures/nCount_nFeature.png)  |
+
+Seurat (Hao Y., et al., 2022) was used to normalize the raw count data, identify highly variable features, scale features, and integrate samples. 
+PCA was performed based on the 3,000 most variable features identified using the vst method implemented in Seurat.
+Gene features associated with type I Interferon (IFN) response, immunoglobulin genes and TCR genes were excluded from clustering  to make sure that clustering result will not be influenced by their variability (Li H., et al. 2019).
+
+The most variable features are presented in the figure below:
+
+![](pictures/variable_genes.png)
+
+A batch effect was observed when merging several datasets. To eliminate it, we used the harmony method.                                                                      
+
+| Clustering by patient before removing batch effects | Clustering by patient after removing batch effects |
+| ------------- | ------------- |
+| <img src="/pictures/umap_patient_before_harmony.png"  width="450" height="450"> | <img src="/pictures/umap_patient_after_harmony.png"  width="450" height="450"> |
+
+
+Then the cells were grouped into clusters.
+Cluster-specific genes were identified from the differential gene expression data, as well as cell-specific markers, which allowed them to be annotated.
+
+
+Clustering by subset of marker genes is shown in the figure below:
+
+![](pictures/umap_marker_genes.png)
+
+Relative expression of the most differentially expressed genes according to the original article.  Five thousand cells were randomly selected from each cluster for imaging:
+
+![](pictures/heatmap_11clusters_label.png)
+
+We identified clusters of major T-cell populations consistent with original publication: multiple CD8 cytotoxic, memory-like, proliferating clusters, MAIT T cells and multiple CD4 T
+cell helper clusters. Tumor samples were enriched in cytotoxic CD8 cells, while normal samples were enriched in CD4 helper cells.  A cluster of CD8+ memory cells is also detected in
+normal samples. 
+
+![](pictures/umap_11clusters_typy_of_tissue.png)
+
+Compared to the original article, we had lower resolution and obtained fewer clusters. This inconsistency may be due to two factors: usage of incomplete dataset, and thus decrease in
+the variation, or difference in the algorithms for the batch correction, variable gene detection and clustering. 
+
+**TCR data analysis**
+
+
+
+
+
+
+
 
 
 
