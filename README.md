@@ -1,8 +1,9 @@
 # Re-analysis of the public dataset: comparison and evaluation of T cells in paired tumor and normal lung single cell samples
 
 Authors:
-- Fedor Grigoryev
 - Kseniia Dracheva
+- Fedor Grigoryev
+
 
 Supervisor:
 - Ekaterina Esaulova
