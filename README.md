@@ -105,9 +105,33 @@ the variation, or difference in the algorithms for the batch correction, variabl
 
 **TCR data analysis**
 
+The filtered single-cell data were merged with TCR data. The distribution of the number of cells containing different types of TCR chains is shown in the figure below:
+
+![](pictures/tcr_chain.png)
+
+The clonal expansion of TILs and TCR diversity were evaluated by using the scRepertoire package (Borcherding N., Bormann N. L., 2020).
+
+There was a difference in the proportion of top clones in different samples:
+
+![](pictures/clonal_proportion_split.png)
+
+Evaluation of the number of cells in clusters assigned to specific frequency range showed an increase in the number of hyperexpanded in the CD8 cell clusters, in CD 4 cells, hyperexpansive clonotypes are not present, and the proportion of large clonotypes is lower:
+
+![](pictures/clonal_cluster.png)
 
 
+## Conclusion
 
+The T-cells were clustered and annotated into subgroups. Matched TCR sequencing has allowed for evaluation of clonal expansion with each T cell subtype and comparison between tumor and normal lung microenvironment. 
+
+It would be of great interest to explore and compare transcriptional programs of tumor associated antigen specific clones in the subsequent works. 
+
+## References
+
+1. Caushi J. X., Zhang J., Ji, Z., et al. (2021). Transcriptional programs of neoantigen-specific TIL in anti-PD-1-treated lung cancers. Nature, 596(7870), 126-132. doi: 10.1038/s41586-021-03752-4
+2. Hao Y., Stuart T., et al. (2022). Dictionary learning for integrative, multimodal, and scalable single-cell analysis. bioRxiv, 2022-02. doi: /10.1101/2022.02.24.481684 
+3. Borcherding N., Bormann N. L. (2020). scRepertoire: An R-based toolkit for single-cell immune receptor analysis. F1000Research, 9. doi: 10.12688/f1000research.22139.2 
+4. Li H., van der Leun A. M., et al. (2019). Dysfunctional CD8 T cells form a proliferative, dynamically regulated compartment within human melanoma. Cell, 176(4), 775-789. doi: 10.1016/j.cell.2018.11.043
 
 
 
