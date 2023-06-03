@@ -19,8 +19,8 @@ Additionally, various metrics that assess the immunogenic qualities of neoantige
 However, these biomarkers are not comprehensive, highlighting the need for further research on the immune component of tumors and also dysfunctional programs in
 MANA specific tumor-infiltrating lymphocytes (TILs).
 
-Our project is based on open data from the article “Transcriptional programs of neoantigen-specific TIL in anti-PD-1-treated lung cancers” (Caushi J. X. et al., 2021).
-The data was obtained from GEO (GSE173351).
+Our project is based on open data from the article [“Transcriptional programs of neoantigen-specific TIL in anti-PD-1-treated lung cancers”](https://www.nature.com/articles/s41586-021-03752-4) (Caushi J. X. et al., 2021).
+The data was obtained from GEO ([GSE173351](https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE173351)).
 
 ## Aim and objectives
 
@@ -99,7 +99,9 @@ Relative expression of the most differentially expressed genes according to the 
 ![](pictures/heatmap_11clusters_label.png)
 
 We identified clusters of major T-cell populations consistent with original publication: multiple CD8 cytotoxic, memory-like, proliferating clusters, MAIT T cells and multiple CD4 T
-cell helper clusters. Tumor samples were enriched in cytotoxic CD8 cells, while normal samples were enriched in CD4 helper cells.  A cluster of CD8+ memory cells is also detected in
+cell helper clusters. 
+
+**Tumor samples** were enriched in cytotoxic CD8 cells, while **normal samples** were enriched in CD4 helper cells.  A cluster of CD8+ memory cells is also detected in
 normal samples. 
 
 ![](pictures/umap_11clusters_typy_of_tissue.png)
@@ -109,9 +111,15 @@ the variation, or difference in the algorithms for the batch correction, variabl
 
 **TCR data analysis**
 
-The filtered single-cell data were merged with TCR data. The distribution of the number of cells containing different types of TCR chains is shown in the figure below:
+The filtered single-cell data were merged with TCR data by cell barcode. Some number of cells were dropped (not all barcoded cells have corresponding sequenced TCR).
 
-![](pictures/tcr_chain.png)
+<img src="pictures/tcr_cell_is.png" width="450" height="500">
+
+In most cases, the TCRs were matched and had quite high levels for all samples. 
+The distribution of the number of cells containing different types of TCR chains is shown in the figure below:
+
+<img src="pictures/tcr_chain.png" width="500" height="450">
+
 
 The clonal expansion of TILs and TCR diversity were evaluated by using the scRepertoire package (Borcherding N., Bormann N. L., 2020).
 
