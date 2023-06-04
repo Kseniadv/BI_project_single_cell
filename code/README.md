@@ -1,0 +1,3 @@
+ - First you need to install the necessary packages using "install_packages.R" 
+ - The file "clustering.R" contains code for the first part of work - clustering of T cells  by type
+ - The file "TCR.R" files contains code for the second part of work - analysis of T cell receptors
