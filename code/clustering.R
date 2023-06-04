@@ -1,13 +1,3 @@
-install.packages("Seurat")
-install.packages("tidyr")
-install.packages("dplyr")
-install.packages("ggplot2")
-install.packages("cowplot")
-install.packages("gridExtra")
-install.packages("rjson")
-install.packages("harmony")
-install.packages("xlsx")
-
 library(Seurat)
 library(tidyr)
 library(dplyr)
@@ -22,7 +12,7 @@ library(xlsx)
 set.seed(1234)
 
 #Download patient samples and merge 
-path <- "F:/IB/Proect_itiog/data/sampels"
+path <- "./data/single_cell"
 dirs <- list.dirs(path, recursive = F, full.names = F)
 for(x in dirs){
   name <-  x
@@ -63,21 +53,21 @@ unique(meta$Barcode)
 #Fig.1. Violin plot for the metrics: nFeature, nCount, percent.mt, percent.rb per sample
 VlnPlot(merge_seurat, features =  c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"),
         split.by = 'Patient', group.by = 'Patient', log = TRUE, ncol = 4, pt.size=0)
-ggsave("F:/IB/Proect_itiog/grafics/itog/vilonplot_per_samples.png")
+ggsave("./pictures/vilonplot_per_samples.png")
 
 #Fig.2. Violin plot for the metrics: nFeature, nCount, percent.mt, percent.rb per sample
 VlnPlot(merge_seurat, features = c("nFeature_RNA", "nCount_RNA", "percent.mt", "percent.rb"), 
         log = TRUE, ncol = 4, pt.size=0)
-ggsave("F:/IB/Proect_itiog/grafics/itog/vilonplot.png")
+ggsave("./pictures/vilonplot.png")
 
 #correlation
 #Fig.3. Correlation plot nCount and percent.mt
 FeatureScatter(merge_seurat, feature1 = "nCount_RNA", feature2 = "percent.mt")
-ggsave("F:/IB/Proect_itiog/grafics/itog/nCount_mt.png")
+ggsave("./pictures/nCount_mt.png")
 
 #Fig.4. Correlation plot nCount and  nFeature 
 FeatureScatter(merge_seurat, feature1 = "nCount_RNA", feature2 = "nFeature_RNA")
-ggsave("F:/IB/Proect_itiog/grafics/itog/nCount_nFeature.png")
+ggsave("./pictures/nCount_nFeature.png")
 
 FeatureScatter(merge_seurat, feature1 = "percent.rb", feature2 = "percent.mt")
 FeatureScatter(merge_seurat, feature1 = "nFeature_RNA", feature2 = "percent.mt")
@@ -119,10 +109,10 @@ plot1 <- VariableFeaturePlot(filtered_seurat)
 plot2 <- LabelPoints(plot = plot1, points = top10, repel = TRUE,
                      xnudge = 0, ynudge = 0)
 plot2
-ggsave("F:/IB/Proect_itiog/grafics/itog/variable_genes.png")
+ggsave("./pictures/variable_genes.png")
 
 #remowe TCR genes, type I Interferon, immunoglobulin genes
-IF <- fromJSON(file = 'F:/IB/Proect_itiog/data/ST_TYPE_I_INTERFERON_PATHWAY.v2023.1.Hs.json')
+IF <- fromJSON(file = './data/ST_TYPE_I_INTERFERON_PATHWAY.v2023.1.Hs.json')
 IF$ST_TYPE_I_INTERFERON_PATHWAY$geneSymbols
 
 most_varibl_genes <- VariableFeatures(filtered_seurat)
@@ -140,14 +130,14 @@ ElbowPlot(filtered_seurat)
 
 #Fig.6. PCA by sample type
 DimPlot(filtered_seurat, reduction = "pca", group.by = 'Type')
-ggsave("F:/IB/Proect_itiog/grafics/itog/PCA_type.png")
+ggsave("./pictures/PCA_type.png")
 
 #UMAP
 filtered_seurat <- RunUMAP(object = filtered_seurat, reduction = "pca", dims = 1:20) 
 
 #Fig.7. Clustering by patient before removing batch effects
 DimPlot(filtered_seurat, reduction = "umap", group.by = 'Patient',  repel = T)
-ggsave("F:/IB/Proect_itiog/grafics/itog/umap_patient_before_harmony.png")
+ggsave("./pictures/umap_patient_before_harmony.png")
 
 #harmony
 filtered_seurat_harmony <- RunHarmony(filtered_seurat , group.by.vars = "Patient",
@@ -167,7 +157,7 @@ table(filtered_seurat_harmony@meta.data$seurat_clusters)
 
 #Fig.8. Clustering by patient after removing batch effects
 DimPlot(filtered_seurat_harmony, reduction = "umap", group.by = 'Patient',  repel = T)
-ggsave("F:/IB/Proect_itiog/grafics/itog/umap_patient_after_harmony.png")
+ggsave("./pictures/umap_patient_after_harmony.png")
 
 #subset of marker genes
 #CD39 = ENTPD1, HOBIT=ZNF683, CD103=ITGAE, PD1 = PDCD1, TIM3 = HAVCR2 
@@ -182,7 +172,7 @@ sub_obj <- subset(filtered_seurat_harmony, idents = c(0:10))
 table(sub_obj@meta.data$seurat_clusters)
 
 DimPlot(sub_obj, reduction = "umap", repel = T, label = T)
-ggsave("F:/IB/Proect_itiog/grafics/itog/umap_harmony_11_clusters.png")
+ggsave("./pictures/umap_harmony_11_clusters.png")
 
 #Fig.9. Subset of marker genes
 #CD39 = ENTPD1, HOBIT=ZNF683, CD103=ITGAE, PD1 = PDCD1, TIM3 = HAVCR2
@@ -190,7 +180,7 @@ FeaturePlot(sub_obj, features = c("CD8A", "GZMK","TCF7", "PDCD1","TIGIT",
                                   "CD4",  "ITGAE", "CXCL13", "CTLA4", "ENTPD1",
                                   "FOXP3","ZNF683","SLC4A10", "HAVCR2", "LAG3"),
             ncol = 5) & NoLegend() & NoAxes()
-ggsave("F:/IB/Proect_itiog/grafics/itog/umap_marker_genes.png")
+ggsave("./pictures/umap_marker_genes.png")
 
 
 #Differential expression and marker selection
@@ -204,18 +194,18 @@ ct_markers <- c("EOMES","GZMK","CRTAM", "NKG7", "GNLY", "S1PR5",
 
 DoHeatmap(sub_obj, features = ct_markers,
           cells = sample(1:ncol(filtered_seurat), 5000), angle = 70) + NoLegend()
-ggsave("F:/IB/Proect_itiog/grafics/itog/heatmap_11clusters.png")
+ggsave("./pictures/heatmap_11clusters.png")
 
 all.markers <- FindAllMarkers(filtered_seurat_harmony, only.pos = T, min.pct = 0.5,
                               logfc.threshold = 0.5, 
                               max.cells.per.ident = 5000)
-write.xlsx(all.markers, 'F:/IB/Proect_itiog/marker_genes_harmony.xlsx')
+write.xlsx(all.markers, './data/marker_genes_harmony.xlsx')
 
 all.markers_sub <- FindAllMarkers(sub_obj, only.pos = T, min.pct = 0.5,
                                   logfc.threshold = all.markers_sub %>%0.5, 
                                   features = most_varibl_genes,
                                   max.cells.per.ident = 5000)
-write.xlsx(all.markers_sub, 'F:/IB/Proect_itiog/marker_genes_sub_harmony.xlsx')
+write.xlsx(all.markers_sub, './data/marker_genes_sub_harmony.xlsx')
 
 new.cluster.ids <- c("CD8-effector(1)", "MAIT",
                      "CD8-proliferating", "CD4-T(FH)", "CD4-Treg", 
@@ -229,13 +219,13 @@ sub_obj$CellType <- Idents(sub_obj)
 #Fig.10. Clustering by type of T-cell 
 DimPlot(sub_obj, reduction = "umap", label = TRUE, label.size = 2.5,label.box = TRUE,
         pt.size = 0.5) + NoLegend()
-ggsave("F:/IB/Proect_itiog/grafics/itog/umap_11clusters_label.png")
+ggsave("./pictures/umap_11clusters_label.png")
 
 #Fig.11. Heatmap of differentially expressed genes
 DoHeatmap(sub_obj, features = ct_markers, label = T,
           cells = sample(1:ncol(sub_obj), 5000), angle = 50, size = 3) + 
   guides(color="none") + theme(text = element_text(size = 10))
-ggsave("F:/IB/Proect_itiog/grafics/itog/heatmap_11clusters_label.png")
+ggsave("./pictures/heatmap_11clusters_label.png")
 
 #Fig.12. Clusters split by type of tissue
 ggplot(sub_obj@meta.data, aes(x=factor(seurat_clusters,
@@ -247,7 +237,7 @@ ggplot(sub_obj@meta.data, aes(x=factor(seurat_clusters,
   geom_bar(position="dodge")+ theme_classic() + xlab("Clusters")+
   theme(axis.text.x = element_text(angle = 70, hjust = 1))+
   scale_fill_discrete(name = "Type of tissue")
-ggsave("F:/IB/Proect_itiog/grafics/itog/barplot_type_dodge_harmony.png")
+ggsave("./pictures/barplot_type_dodge_harmony.png")
 
 #Fig.13. Clusters split by patients
 ggplot(data = sub_obj@meta.data, aes(factor(seurat_clusters,
@@ -259,17 +249,17 @@ ggplot(data = sub_obj@meta.data, aes(factor(seurat_clusters,
   geom_bar(position="dodge") + theme_classic() + xlab("Clusters")+
   theme(axis.text.x = element_text(angle = 70, hjust = 1))+
   scale_fill_discrete(name = "Patient")
-ggsave("F:/IB/Proect_itiog/grafics/itog/barplot_patient_dodge_harmony.png")
+ggsave("./pictures/barplot_patient_dodge_harmony.png")
 
 #Fig.14. Umap split by type of tissue
 DimPlot(sub_obj, reduction = "umap", label = TRUE, label.size = 2.5,label.box = TRUE,
         pt.size = 0.5, split.by = "Type") + NoLegend()
-ggsave("F:/IB/Proect_itiog/grafics/itog/umap_11clusters_typy_of_tissue.png")
+ggsave("./pictures/umap_11clusters_typy_of_tissue.png")
 
 #Save seurat object
-saveRDS(filtered_seurat, file='F:/IB/Proect_itiog/processed_seurat_object_4s.rds')
-saveRDS(filtered_seurat_harmony, file='F:/IB/Proect_itiog/processed_seurat_object_4s_harmony.rds')
-saveRDS(sub_obj, file='F:/IB/Proect_itiog/processed_seurat_object_sub_4s_harmony.rds')
+saveRDS(filtered_seurat, file='./data/processed_seurat_object_4s.rds')
+saveRDS(filtered_seurat_harmony, file='./data/processed_seurat_object_4s_harmony.rds')
+saveRDS(sub_obj, file='./data/processed_seurat_object_sub_4s_harmony.rds')
 
 
 
