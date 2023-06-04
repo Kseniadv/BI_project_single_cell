@@ -1,6 +1,3 @@
-install.packages("data.table")
-BiocManager::install("scRepertoire")
-
 library(Seurat)
 library(tidyr)
 library(dplyr)
@@ -11,8 +8,8 @@ library(scRepertoire)
 set.seed(1234)
 
 # load seurat object
-filtered_seurat <- readRDS(file='F:/IB/Proect_itiog/processed_seurat_object_4s_harmony.rds')
-sub_obj <- readRDS(file='F:/IB/Proect_itiog/processed_seurat_object_sub_4s_harmony.rds')
+filtered_seurat <- readRDS(file='./data/processed_seurat_object_4s_harmony.rds')
+sub_obj <- readRDS(file='./data/processed_seurat_object_sub_4s_harmony.rds')
 
 
 #TCR load and trim
@@ -21,10 +18,10 @@ barcoder <- function(df, prefix){
   df
 }
 
-dirs_tcr <- list.dirs("F:/IB/Proect_itiog/data/tcr", recursive = F, full.names = F)
+dirs_tcr <- list.dirs("./data/tcr", recursive = F, full.names = F)
 tcr <- data.frame() 
 for(x in dirs_tcr[c(1:8)]){
-  tcr_new <- read.csv(paste0("F:/IB/Proect_itiog/data/tcr/", x, "/filtered_contig_annotations.csv"))
+  tcr_new <- read.csv(paste0("./data/tcr/", x, "/filtered_contig_annotations.csv"))
   x <- gsub("-", "_", x)
   tcr_new <- barcoder(tcr_new, prefix = x)
   tcr <- rbind(tcr, tcr_new)
@@ -61,7 +58,7 @@ unique(combined@meta.data$chain)
 uniqueN(combined@meta.data$clonotype_id)  #4903
 
 #save
-saveRDS(combined , file='F:/IB/Proect_itiog/processed_seurat_object_tcr_harmony.rds')
+saveRDS(combined , file='./data/processed_seurat_object_tcr_harmony.rds')
 
 #Fig.15. TRC chain in normal and tumor sample 
 ggplot(data = combined@meta.data, aes(factor(Patient), fill = chain))+ 
@@ -69,19 +66,19 @@ ggplot(data = combined@meta.data, aes(factor(Patient), fill = chain))+
   facet_grid(~ Type) + 
   scale_x_discrete(name ="")+
   theme(axis.text.x = element_text( size = 10, hjust = 1, angle = 30))
-ggsave("F:/IB/Proect_itiog/grafics/itog/tcr_chain.png")
+ggsave("./pictures/tcr_chain.png")
 
 #Fig.16. Cell with TCR
 DimPlot(combined, reduction = 'umap', group.by = 'is_cell')+
   ggtitle("")+
   scale_color_discrete(labels = c("cell with TCR", "cell without TCR"))
-ggsave("F:/IB/Proect_itiog/grafics/itog/tcr_cell_is.png")
+ggsave("./pictures/tcr_cell_is.png")
 
 
 #Clonotypes
 for(x in dirs_tcr[c(1:8)]){
   name <- gsub("-", "_", x)
-  tcr_new <- read.csv(paste0("F:/IB/Proect_itiog/data/tcr/", x, "/filtered_contig_annotations.csv"))
+  tcr_new <- read.csv(paste0("./data/tcr/", x, "/filtered_contig_annotations.csv"))
   tcr_new$is_cell <- toupper(tcr_new$is_cell)
   tcr_new$productive <- toupper(tcr_new$productive)
   assign(name, tcr_new)
@@ -122,7 +119,7 @@ clonalHomeostasis(combineT, cloneCall = "gene",
 #Fig. 17.  Proportion of top N clones per sample 
 clonalProportion(combineT, cloneCall = "gene", split = c(10, 100, 1000, 10000))+
   theme(axis.text.x = element_text( size = 10, hjust = 1, angle = 50))
-ggsave("F:/IB/Proect_itiog/grafics/itog/clonal_proportion.png")
+ggsave("./pictures/clonal_proportion.png")
 
 #make a single list
 sub_obj <- combineExpression(combineT, sub_obj, 
@@ -135,7 +132,7 @@ sub_obj <- combineExpression(combineT, sub_obj,
 #Fig. 18. Distribution of the clonotypes
 occupiedscRepertoire(sub_obj, x.axis = "ident", label = FALSE)+
   theme(axis.text.x = element_text( size = 10, hjust = 1, angle = 50))
-ggsave("F:/IB/Proect_itiog/grafics/itog/clonal_cluster.png")
+ggsave("./pictures/clonal_cluster.png")
 
 #Compare Clonotypes
 compareClonotypes(combineT, numbers = 5, cloneCall = "aa", graph = "alluvial", 
@@ -152,5 +149,4 @@ vizGenes(combineT, gene = "V",
 
 #sessionInfo
 clustering_tcr_sessionInfo.Rmd <- sessionInfo()
-home_dir <- "F:/IB/Proect_itiog"
-writeLines(capture.output(sessionInfo()), paste0(home_dir, "/session_info.", format(Sys.time(), "%Y%m%d.%H%M"), ".txt"))
+writeLines(capture.output(sessionInfo()), paste0( "./session_info.txt"))
